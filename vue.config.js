@@ -1,4 +1,4 @@
-module.export = {
+module.exports = {
   devServer: {
     host: process.env.VUE_APP_CLIENT_HOST,
     port: process.env.VUE_APP_CLIENT_PORT,
