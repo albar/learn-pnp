@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { sp } from '@pnp/sp';
-import { SPFetchClient } from '@pnp/nodejs';
 import '@pnp/sp/webs';
 
+import { SPRequestExecutorFetchClient } from '../lib/SPRequestExecutorFetchClient';
 import App from './App.vue';
 import router from './router';
 
@@ -17,10 +17,8 @@ new Vue({
     // do this once per page load
     sp.setup({
       sp: {
-        fetchClientFactory: () => new SPFetchClient(
+        fetchClientFactory: () => new SPRequestExecutorFetchClient(
           process.env.VUE_APP_SERVER_HOST,
-          process.env.VUE_APP_CLIENT_ID,
-          process.env.VUE_APP_CLIENT_SECRET,
         ),
       },
     });
