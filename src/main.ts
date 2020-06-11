@@ -11,9 +11,7 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   render: (h) => h(App),
-  mounted() {
-    console.log(process.env);
-
+  created() {
     // do this once per page load
     sp.setup({
       sp: {
@@ -22,10 +20,15 @@ new Vue({
         ),
       },
     });
+  },
+  mounted() {
+    console.log(process.env);
 
-    // now make any calls you need using the configured client
-    sp.web.select('Title')().then((w) => {
-      console.log(`Web Title: ${w.Title}`);
-    });
+    setTimeout(() => {
+      // now make any calls you need using the configured client
+      sp.web.select('Title')().then((w) => {
+        console.log(`Web Title: ${w.Title}`);
+      });
+    }, 5000);
   },
 }).$mount('#app');
