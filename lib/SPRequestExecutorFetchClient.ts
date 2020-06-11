@@ -19,10 +19,9 @@ export class SPRequestExecutorFetchClient implements IHttpClientImpl {
 
   constructor(siteUrl: string) {
     this.siteUrl = siteUrl;
-    this.client = new SP.RequestExecutor(siteUrl);
   }
 
-  fetch(url: string, options: IFetchOptions): Promise<Response> {
+  fetch(url: string, options: IFetchOptions = {}): Promise<Response> {
     let resolve: PromiseResolve<Response>;
 
     const promise = new Promise<Response>((r) => {
@@ -30,6 +29,10 @@ export class SPRequestExecutorFetchClient implements IHttpClientImpl {
     });
 
     console.log('requesting', url, options);
+
+    if (!this.client) {
+      this.client = new SP.RequestExecutor(this.siteUrl);
+    }
 
     this.client.executeAsync({
       url: `${this.siteUrl}/${url}`,
@@ -39,7 +42,7 @@ export class SPRequestExecutorFetchClient implements IHttpClientImpl {
         return resolve(new Response(data.body, data));
       },
       error: (data: any, status: number, statusText: string) => {
-        console.log('error', data);
+        console.log('error', data, status, statusText);
         return resolve(new Response(data.body, {
           status,
           statusText,
