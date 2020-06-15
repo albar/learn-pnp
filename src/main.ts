@@ -1,8 +1,7 @@
 import Vue from 'vue';
-import { sp } from '@pnp/sp';
+import { sp, SPRequestExecutorClient } from '@pnp/sp-addinhelpers';
 import '@pnp/sp/webs';
 
-import { SPRequestExecutorFetchClient } from '../lib/SPRequestExecutorFetchClient';
 import App from './App.vue';
 import router from './router';
 
@@ -15,20 +14,19 @@ new Vue({
     // do this once per page load
     sp.setup({
       sp: {
-        fetchClientFactory: () => new SPRequestExecutorFetchClient(
-          process.env.VUE_APP_SERVER_HOST,
-        ),
+        fetchClientFactory: () => new SPRequestExecutorClient(),
       },
     });
   },
   mounted() {
     console.log(process.env);
 
-    setTimeout(() => {
-      // now make any calls you need using the configured client
-      sp.web.select('Title')().then((w) => {
-        console.log(`Web Title: ${w.Title}`);
-      });
-    }, 5000);
+    sp.crossDomainWeb(
+      process.env.VUE_APP_SERVER_HOST,
+      process.env.VUE_APP_SERVER_HOST,
+    ).get().then((w) => {
+      console.log('zulul', w);
+      console.log(JSON.stringify(w, null, 4));
+    });
   },
 }).$mount('#app');
