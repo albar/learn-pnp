@@ -27,13 +27,14 @@
     </v-toolbar>
     <v-list two-line>
       <template v-for="(course, index) in courses">
-        <v-list-item :key="course.Id">
+        <v-divider :key="index"></v-divider>
+        <v-list-item :key="course.Title">
           <template>
             <v-list-item-content>
               <v-list-item-title v-text="course.Title"></v-list-item-title>
-              <v-list-item-subtitle
+              <v-list-item-subtitle v-if="course.Category"
                 class="text--primary"
-                v-text="course.Category ? course.Category.Title : ''"
+                v-text="course.Category.Title"
               ></v-list-item-subtitle>
               <v-list-item-subtitle v-text="course.Description"></v-list-item-subtitle>
             </v-list-item-content>
@@ -47,8 +48,6 @@
             </v-list-item-action>
           </template>
         </v-list-item>
-
-        <v-divider v-if="index + 1 < courses.length" :key="index"></v-divider>
       </template>
     </v-list>
   </div>
@@ -56,11 +55,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { sp } from '@pnp/sp';
-import '@pnp/sp/webs';
-import '@pnp/sp/lists';
+import { sp } from '@pnp/sp/presets/all';
 import { PagedItemCollection } from '@pnp/sp/items';
 import { ICourse } from '@/models/course';
+import { NodeFetchClient } from '@pnp/nodejs';
 
 const courses: ICourse[] = [
   {
@@ -102,10 +100,18 @@ export default Vue.extend({
     },
   },
   async created() {
+    sp.setup({
+      sp: {
+        fetchClientFactory: () => new NodeFetchClient(),
+      },
+    });
     try {
       this.items = await sp.web.lists
         .getByTitle('Courses')
-        .items.top(10)
+        .items
+        .expand('Category')
+        .select('*', 'Category/Id', 'Category/Title')
+        .top(10)
         .getPaged<ICourse[]>();
     } catch (e) {
       console.log(e);
