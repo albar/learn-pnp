@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
 
-    <script src="<%= VUE_APP_SERVER_HOST %>/_layouts/15/init.js"></script>
-    <script src="<%= VUE_APP_SERVER_HOST %>/_layouts/15/microsoftajax.js"></script>
-    <script src="<%= VUE_APP_SERVER_HOST %>/_layouts/15/SP.Init.js"></script>
-    <script src="<%= VUE_APP_SERVER_HOST %>/_layouts/15/core.js"></script>
-    <script src="<%= VUE_APP_SERVER_HOST %>/_layouts/15/SP.Core.js"></script>
-    <script src="<%= VUE_APP_SERVER_HOST %>/_layouts/15/SP.Runtime.js"></script>
-    <script src="<%= VUE_APP_SERVER_HOST %>/_layouts/15/SP.js"></script>
-    <script src="<%= VUE_APP_SERVER_HOST %>/_layouts/15/SP.RequestExecutor.js"></script>
-    <!-- built files will be auto injected -->
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+      Please enable it to continue.</strong>
+  </noscript>
+  <div id="app"></div>
+
+  <!-- built files will be auto injected -->
+</body>
+
 </html>

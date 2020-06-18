@@ -1,27 +1,67 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import Home from '../views/Home.vue';
+import Main from '../views/Main.vue';
 
 Vue.use(VueRouter);
+
+function buildRoutes(parent: string): RouteConfig[] {
+  return [
+    {
+      path: '/',
+      component: () => import(`@/views/${parent}/Course/List`),
+      meta: {
+        breadcrumbs: ['Course', 'List'],
+      },
+    },
+    {
+      path: '/course/create',
+      component: () => import(`@/views/${parent}/Course/Form`),
+      meta: {
+        breadcrumbs: ['Course', 'Create'],
+      },
+    },
+    {
+      path: '/course/:id',
+      component: () => import(`@/views/${parent}/Course/Detail`),
+      meta: {
+        breadcrumbs: ['Course', 'Detail'],
+      },
+    },
+    {
+      path: '/course/:id/edit',
+      component: () => import(`@/views/${parent}/Course/Form`),
+      meta: {
+        breadcrumbs: ['Course', 'Edit'],
+      },
+    },
+  ];
+}
 
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    redirect: '/vuetify',
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    path: '/vuetify',
+    children: buildRoutes('vuetify'),
+    component: Main,
+    meta: {
+      title: 'Vuetify',
+    },
   },
+  // {
+  //   path: '/diy',
+  //   children: buildRoutes('diy'),
+  //   component: Main,
+  //   meta: {
+  //     title: 'Diy',
+  //   },
+  // },
 ];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes,
 });
