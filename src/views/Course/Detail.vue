@@ -63,8 +63,7 @@
             <v-col :key="requirement.Id" cols="auto">
               <course-card
                 :course="requirement"
-                titleClickable
-                @title-clicked="$router.push(`/course/${requirement.Id}`)"
+                title-link
               ></course-card>
             </v-col>
           </template>

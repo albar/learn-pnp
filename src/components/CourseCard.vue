@@ -1,11 +1,11 @@
 <template>
   <v-card outlined>
     <v-card-title>
-      <a
-        v-if="titleClickable"
-        @click="$emit('title-clicked')"
+      <router-link
+        v-if="titleLink"
+        :to="`/course/${course.Id}`"
         class="text-h6"
-      >{{ course.Title }}</a>
+      >{{ course.Title }}</router-link>
       <h6 v-else class="text-h6">{{ course.Title }}</h6>
       <v-chip
         v-if="course.Category"
@@ -31,7 +31,7 @@ export default Vue.extend({
       type: Object,
       required: true,
     },
-    titleClickable: {
+    titleLink: {
       type: Boolean,
       default: false,
     },
