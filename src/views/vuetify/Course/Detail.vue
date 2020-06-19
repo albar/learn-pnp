@@ -54,7 +54,9 @@
           {{ item.Description }}
         </v-col>
       </v-row>
-      <h5>This course requires the following courses to be taken fisrt</h5>
+      <h5 class="text-subtitle-2 text-decoration-underline">
+        This course requires the following courses to be taken fisrt
+      </h5>
       <v-row>
         <template v-for="requirement in item.Requirements">
           <v-col :key="requirement.Id" cols="auto">
