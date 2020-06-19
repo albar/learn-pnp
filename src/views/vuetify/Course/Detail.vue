@@ -89,7 +89,7 @@
 import Vue from 'vue';
 import '@pnp/sp/presets/core';
 import '@pnp/sp/items';
-import { ICourse, ICourseCategory } from '@/models/course';
+import { ICourse } from '@/models/course';
 
 const staticCourse: ICourse = {
   Id: 1,
@@ -154,47 +154,21 @@ export default Vue.extend({
           Modified: new Date(course.Modified),
         };
 
-        const requirements = await this.$sp.web
+        const requirementsIds: number[] = (await this.$sp.web
           .lists.getByTitle('CoursesDependencies')
           .items.filter(`ChildId eq ${id}`)
           .expand('Parent')
-          .select('Parent/Id', 'Parent/Title', 'Parent/Description', 'Parent/CategoryId')
-          .getAll();
+          .select('Parent/Id')
+          .getAll()).map((req) => req.Parent.Id);
 
-        let categoriesIds = requirements.map((req) => req.Parent.CategoryId);
+        const requirements = await this.$sp.web
+          .lists.getByTitle('Courses')
+          .items.filter(requirementsIds.map((rId) => `Id eq ${rId}`).join(' or '))
+          .expand('Category')
+          .select('*', 'Category/Id', 'Category/Title')
+          .get<ICourse[]>();
 
-        const categories: ICourseCategory[] = [];
-
-        if (this.item?.Category) {
-          categoriesIds = categoriesIds.filter((cId) => cId !== this.item?.Category?.Id);
-          categories.push(this.item.Category);
-        }
-
-        if (categoriesIds.length > 0) {
-          categories.push(
-            ...await this.$sp.web
-              .lists.getByTitle('CourseCategory')
-              .items.filter(categoriesIds.map((cId) => `Id eq ${cId}`).join(' or '))
-              .get<ICourseCategory[]>(),
-          );
-        }
-
-        const dcat: {[key: number]: ICourseCategory} = {};
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const cat of categories) {
-          dcat[cat.Id] = cat;
-        }
-
-        this.item.Requirements = requirements.map((req) => {
-          const parent = req.Parent;
-          return {
-            Id: parent.Id,
-            Title: parent.Title,
-            Description: parent.Description,
-            Category: dcat[parent.CategoryId],
-          };
-        });
+        this.item.Requirements = requirements;
       }
     } catch (e) {
       console.log(e);
