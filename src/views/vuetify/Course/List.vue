@@ -104,12 +104,34 @@ const courses: ICourse[] = [
 export default Vue.extend({
   components: { CourseListItem },
   data: () => ({
-    items: null as PagedItemCollection<ICourse[]> | null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items: null as PagedItemCollection<any[]> | null,
     query: null as string | null,
   }),
   computed: {
     courses(): ICourse[] {
-      return this.items?.results || courses;
+      if (this.items) {
+        this.items.results.map((item) => {
+          const course: ICourse = {
+            Id: item.Id,
+            Title: item.Title,
+            Description: item.Description,
+          };
+
+          if (item.Category) {
+            course.Category = item.Category;
+          }
+          if (item.Created) {
+            course.Created = new Date(item.Created);
+          }
+          if (item.Modified) {
+            course.Modified = new Date(item.Modified);
+          }
+
+          return course;
+        });
+      }
+      return courses;
     },
   },
   async created() {
