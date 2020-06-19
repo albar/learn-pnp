@@ -14,8 +14,11 @@ Vue.config.devtools = true;
 
 Vue.use(PortalVue);
 Vue.use(PnpVue, {
-  sp: {
-    fetchClientFactory: () => new NodeFetchClient(),
+  baseUrl: process.env.VUE_APP_SERVER_HOST,
+  spConfig: {
+    sp: {
+      fetchClientFactory: () => new NodeFetchClient(),
+    },
   },
 });
 

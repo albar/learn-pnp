@@ -1,6 +1,6 @@
 import { PluginObject } from 'vue';
 import { SPRest, SPConfiguration } from '@pnp/sp';
-import { ISPFXContext } from '@pnp/common';
+import { ISPFXContext, IConfigOptions } from '@pnp/common';
 
 declare module 'vue/types/vue' {
   export interface Vue {
@@ -8,12 +8,18 @@ declare module 'vue/types/vue' {
   }
 }
 
+export interface IPnpVuePluginOption {
+  baseUrl?: string;
+  restConfig?: IConfigOptions;
+  spConfig: SPConfiguration | ISPFXContext;
+}
+
 export default {
-  install(Vue, options = {}) {
-    const sp = new SPRest();
-    sp.setup(options);
+  install(Vue, options: IPnpVuePluginOption) {
+    const sp = new SPRest(options.restConfig, options.baseUrl);
+    sp.setup(options.spConfig);
 
     // eslint-disable-next-line no-param-reassign
     Vue.prototype.$sp = sp;
   },
-} as PluginObject<SPConfiguration | ISPFXContext>;
+} as PluginObject<IPnpVuePluginOption>;
