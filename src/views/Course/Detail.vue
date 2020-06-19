@@ -1,7 +1,7 @@
 <template>
   <div v-if="!initializing">
     <portal to="page-action">
-      <v-btn text small color="secondary" exact to="/vuetify/course" class="mr-2">Back</v-btn>
+      <v-btn text small color="secondary" exact to="/course" class="mr-2">Back</v-btn>
       <v-menu offset-y left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -15,7 +15,7 @@
           </v-btn>
         </template>
         <v-list elevation="0" nav flat dense>
-          <v-list-item :to="`/vuetify/course/${$route.params.id}/edit`">
+          <v-list-item :to="`/course/${$route.params.id}/edit`">
             <v-list-item-icon left>
               <v-icon>mdi-pencil</v-icon>
             </v-list-item-icon>
@@ -61,22 +61,10 @@
         <v-row>
           <template v-for="requirement in course.Requirements">
             <v-col :key="requirement.Id" cols="auto">
-              <v-card outlined>
-                <v-card-title>
-                  {{ requirement.Title }}
-                  <v-chip
-                    v-if="requirement.Category"
-                    small
-                    class="ma-2"
-                    outlined
-                    flat
-                    label
-                  >
-                    {{ requirement.Category.Title }}
-                  </v-chip>
-                </v-card-title>
-                <v-card-text v-text="requirement.Description"></v-card-text>
-              </v-card>
+              <course-card
+                :course="requirement"
+                :titleLink="`/course/${requirement.Id}`"
+              ></course-card>
             </v-col>
           </template>
         </v-row>
@@ -90,6 +78,7 @@ import Vue from 'vue';
 import '@pnp/sp/presets/core';
 import '@pnp/sp/items';
 import { ICourse } from '@/models/course';
+import CourseCard from '@/components/CourseCard.vue';
 
 const staticCourse: ICourse = {
   Id: 1,
@@ -128,6 +117,7 @@ const staticCourse: ICourse = {
 };
 
 export default Vue.extend({
+  components: { CourseCard },
   data: () => ({
     initializing: true,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,67 +1,41 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import Main from '../views/Main.vue';
 
 Vue.use(VueRouter);
-
-function buildRoutes(parent: string): RouteConfig[] {
-  return [
-    {
-      path: '',
-      redirect: '/vuetify/course',
-    },
-    {
-      path: 'course',
-      component: () => import(`@/views/${parent}/Course/List`),
-      meta: {
-        breadcrumbs: ['Course'],
-      },
-    },
-    {
-      path: 'course/create',
-      component: () => import(`@/views/${parent}/Course/Form`),
-      meta: {
-        breadcrumbs: ['Course', 'Create'],
-      },
-    },
-    {
-      path: 'course/:id',
-      component: () => import(`@/views/${parent}/Course/Detail`),
-      meta: {
-        breadcrumbs: ['Course', 'Detail'],
-      },
-    },
-    {
-      path: 'course/:id/edit',
-      component: () => import(`@/views/${parent}/Course/Form`),
-      meta: {
-        breadcrumbs: ['Course', 'Edit'],
-      },
-    },
-  ];
-}
 
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    redirect: '/vuetify/course',
+    redirect: '/course',
   },
   {
-    path: '/vuetify',
-    children: buildRoutes('vuetify'),
-    component: Main,
+    path: '/course',
+    component: () => import('@/views/Course/List.vue'),
     meta: {
-      title: 'Vuetify',
+      breadcrumbs: ['Course'],
     },
   },
-  // {
-  //   path: '/diy',
-  //   children: buildRoutes('diy'),
-  //   component: Main,
-  //   meta: {
-  //     title: 'Diy',
-  //   },
-  // },
+  {
+    path: '/course/create',
+    component: () => import('@/views/Course/Form.vue'),
+    meta: {
+      breadcrumbs: ['Course', 'Create'],
+    },
+  },
+  {
+    path: '/course/:id',
+    component: () => import('@/views/Course/Detail.vue'),
+    meta: {
+      breadcrumbs: ['Course', 'Detail'],
+    },
+  },
+  {
+    path: '/course/:id/edit',
+    component: () => import('@/views/Course/Form.vue'),
+    meta: {
+      breadcrumbs: ['Course', 'Edit'],
+    },
+  },
 ];
 
 const router = new VueRouter({

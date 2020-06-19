@@ -5,7 +5,7 @@
         outlined
         small
         color="secondary"
-        link to="/vuetify/course/create"
+        link to="/course/create"
       >Create a Course</v-btn>
     </portal>
     <v-toolbar flat>
@@ -54,8 +54,8 @@
       <v-divider></v-divider>
       <template v-for="(course, index) in courses">
         <CourseListItem
-          :view-link="`/vuetify/course/${course.Id}`"
-          :edit-link="`/vuetify/course/${course.Id}/edit`"
+          :view-link="`/course/${course.Id}`"
+          :edit-link="`/course/${course.Id}/edit`"
           :key="course.Title"
           :course="course"
           viewable editable />
