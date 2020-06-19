@@ -19,10 +19,14 @@
 
       <v-list-item-action>
         <div>
-          <v-icon v-if="course.Modified.getTime() > course.Created.getTime()"
+          <v-icon
+            v-if="course.Modified && course.Created &&
+              course.Modified.getTime() > course.Created.getTime()"
             left small
           >mdi-pencil</v-icon>
-          <v-list-item-action-text v-text="course.Modified"></v-list-item-action-text>
+          <v-list-item-action-text
+            v-text="course.Modified || course.Created"
+          ></v-list-item-action-text>
         </div>
         <div>
           <v-btn v-if="viewable"
@@ -79,7 +83,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style>
-
-</style>
