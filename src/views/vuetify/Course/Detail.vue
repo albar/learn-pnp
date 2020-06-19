@@ -161,14 +161,14 @@ export default Vue.extend({
           .select('Parent/Id')
           .getAll()).map((req) => req.Parent.Id);
 
-        const requirements = await this.$sp.web
-          .lists.getByTitle('Courses')
-          .items.filter(requirementsIds.map((rId) => `Id eq ${rId}`).join(' or '))
-          .expand('Category')
-          .select('*', 'Category/Id', 'Category/Title')
-          .get<ICourse[]>();
-
-        this.item.Requirements = requirements;
+        if (requirementsIds.length > 0) {
+          this.item.Requirements = await this.$sp.web
+            .lists.getByTitle('Courses')
+            .items.filter(requirementsIds.map((rId) => `Id eq ${rId}`).join(' or '))
+            .expand('Category')
+            .select('*', 'Category/Id', 'Category/Title')
+            .get<ICourse[]>();
+        }
       }
     } catch (e) {
       console.log(e);
