@@ -7,28 +7,32 @@ Vue.use(VueRouter);
 function buildRoutes(parent: string): RouteConfig[] {
   return [
     {
-      path: '/',
+      path: '',
+      redirect: '/vuetify/course',
+    },
+    {
+      path: 'course',
       component: () => import(`@/views/${parent}/Course/List`),
       meta: {
-        breadcrumbs: ['Course', 'List'],
+        breadcrumbs: ['Course'],
       },
     },
     {
-      path: '/course/create',
+      path: 'course/create',
       component: () => import(`@/views/${parent}/Course/Form`),
       meta: {
         breadcrumbs: ['Course', 'Create'],
       },
     },
     {
-      path: '/course/:id',
+      path: 'course/:id',
       component: () => import(`@/views/${parent}/Course/Detail`),
       meta: {
         breadcrumbs: ['Course', 'Detail'],
       },
     },
     {
-      path: '/course/:id/edit',
+      path: 'course/:id/edit',
       component: () => import(`@/views/${parent}/Course/Form`),
       meta: {
         breadcrumbs: ['Course', 'Edit'],
@@ -40,7 +44,7 @@ function buildRoutes(parent: string): RouteConfig[] {
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    redirect: '/vuetify',
+    redirect: '/vuetify/course',
   },
   {
     path: '/vuetify',

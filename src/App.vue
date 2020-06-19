@@ -1,11 +1,10 @@
 <template>
-  <v-app id="app">
+  <v-app id="app" class="grey lighten-4">
     <v-main>
       <v-container>
         <v-toolbar flat>
-          <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
           <v-spacer></v-spacer>
-          <v-menu offset-y>
+          <v-menu offset-y left>
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" depressed outlined small v-bind="attrs" v-on="on">
                 {{ $route.matched[0] ? $route.matched[0].meta.title : '' }}
@@ -24,6 +23,12 @@
           </v-menu>
         </v-toolbar>
         <v-divider></v-divider>
+        <v-toolbar flat dense>
+          <v-container fluid class="d-flex align-center justify-space-between">
+            <v-breadcrumbs :items="breadcrumbs" class="pa-0"></v-breadcrumbs>
+            <portal-target name="page-action"></portal-target>
+          </v-container>
+        </v-toolbar>
         <router-view class="mt-4"></router-view>
       </v-container>
     </v-main>
@@ -38,17 +43,18 @@ export default Vue.extend({
   computed: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     breadcrumbs(): any[] {
-      return this.$route
-        .matched
+      const breadcrumbs = this.$route.matched
         .slice(1)
-        .flatMap((route: RouteRecord) => route.meta.breadcrumbs.map((breadcrumb: string) => ({
-          disabled: false,
-          exact: true,
-          href: route.path,
-          link: true,
-          text: breadcrumb,
-          to: route.path,
-        })));
+        .flatMap((route: RouteRecord) => route.meta.breadcrumbs);
+
+      return ['Learn PnpJs', ...breadcrumbs].map((breadcrumb: string) => ({
+        disabled: false,
+        exact: true,
+        href: null,
+        link: true,
+        text: breadcrumb,
+        to: null,
+      }));
     },
   },
 });

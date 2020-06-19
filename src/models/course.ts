@@ -4,13 +4,13 @@ interface ICategory {
 }
 
 interface ICourse {
-  Id: number,
-  Title: string,
-  Description: string,
-  Category?: ICategory,
-  DependsOn?: ICourse[],
-  Created: Date,
-  Modified: Date,
+  Id?: number,
+  Title: string | null,
+  Description: string | null,
+  Category?: ICategory | null,
+  Requirements?: ICourse[],
+  Created?: Date,
+  Modified?: Date,
   [key: string]: any,
 }
 
