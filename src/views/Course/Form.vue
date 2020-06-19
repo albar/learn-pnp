@@ -1,8 +1,8 @@
 <template>
-  <div v-if="!initializing">
+  <div>
     <portal to="page-action">
-      <v-btn @click="back" text small color="secondary" class="mr-2">Cancel</v-btn>
-      <v-btn outlined small color="primary">Save</v-btn>
+      <v-btn key="cancel" @click="back" text small color="secondary" class="mr-2">Cancel</v-btn>
+      <v-btn key="save" outlined small color="primary">Save</v-btn>
     </portal>
 
     <v-form>
@@ -78,7 +78,6 @@ function createCourse(): ICourse {
 
 export default Vue.extend({
   data: () => ({
-    initializing: true,
     requirements: [],
     course: null as ICourse | null,
   }),
@@ -98,10 +97,6 @@ export default Vue.extend({
       if (!this.course) {
         this.course = createCourse();
       }
-
-      setTimeout(() => {
-        this.initializing = false;
-      }, 100);
     }
   },
   computed: {

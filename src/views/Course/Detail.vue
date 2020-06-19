@@ -1,8 +1,8 @@
 <template>
-  <div v-if="!initializing">
+  <div>
     <portal to="page-action">
-      <v-btn text small color="secondary" exact to="/course" class="mr-2">Back</v-btn>
-      <v-menu offset-y left>
+      <v-btn key="back" text small color="secondary" exact to="/course" class="mr-2">Back</v-btn>
+      <v-menu key="menu" offset-y left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             v-bind="attrs" v-on="on"
@@ -119,8 +119,6 @@ const staticCourse: ICourse = {
 export default Vue.extend({
   components: { CourseCard },
   data: () => ({
-    initializing: true,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     item: null as ICourse | null,
   }),
   async created() {
@@ -162,8 +160,6 @@ export default Vue.extend({
       }
     } catch (e) {
       console.log(e);
-    } finally {
-      this.initializing = false;
     }
   },
   computed: {

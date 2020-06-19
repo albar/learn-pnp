@@ -1,7 +1,7 @@
 <template>
   <div>
     <portal to="page-action">
-      <v-btn
+      <v-btn key="create"
         outlined
         small
         color="secondary"
