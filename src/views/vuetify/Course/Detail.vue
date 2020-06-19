@@ -89,7 +89,7 @@
 import Vue from 'vue';
 import '@pnp/sp/presets/core';
 import '@pnp/sp/items';
-import { ICourse } from '@/models/course';
+import { ICourse, ICourseCategory } from '@/models/course';
 
 const staticCourse: ICourse = {
   Id: 1,
@@ -131,18 +131,70 @@ export default Vue.extend({
   data: () => ({
     initializing: true,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    items: [] as any[],
+    item: null as ICourse | null,
   }),
   async created() {
     try {
       if (this.$route.params.id) {
         const id = Number(this.$route.params.id);
-        this.items = await this.$sp.web
+
+        const course = await this.$sp.web
+          .lists.getByTitle('Courses')
+          .items.getById(id)
+          .expand('Category')
+          .select('*', 'Category/Id', 'Category/Title')
+          .get();
+
+        this.item = {
+          Id: course.Id,
+          Title: course.Title,
+          Description: course.Description,
+          Category: course.Category,
+          Created: new Date(course.Created),
+          Modified: new Date(course.Modified),
+        };
+
+        const requirements = await this.$sp.web
           .lists.getByTitle('CoursesDependencies')
           .items.filter(`ChildId eq ${id}`)
-          .expand('Child', 'Child/Category', 'Parent', 'Parent/Category')
-          .select('Parent/Id', 'Child/Id')
-          .get();
+          .expand('Parent')
+          .select('Parent/Id', 'Parent/Title', 'Parent/Description', 'Parent/CategoryId')
+          .getAll();
+
+        let categoriesIds = requirements.map((req) => req.Parent.CategoryId);
+
+        const categories: ICourseCategory[] = [];
+
+        if (this.item?.Category) {
+          categoriesIds = categoriesIds.filter((cId) => cId !== this.item?.Category?.Id);
+          categories.push(this.item.Category);
+        }
+
+        if (categoriesIds.length > 0) {
+          categories.push(
+            ...await this.$sp.web
+              .lists.getByTitle('CourseCategory')
+              .items.filter(categoriesIds.map((cId) => `Id eq ${cId}`).join(' or '))
+              .get<ICourseCategory[]>(),
+          );
+        }
+
+        const dcat: {[key: number]: ICourseCategory} = {};
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const cat of categories) {
+          dcat[cat.Id] = cat;
+        }
+
+        this.item.Requirements = requirements.map((req) => {
+          const parent = req.Parent;
+          return {
+            Id: parent.Id,
+            Title: parent.Title,
+            Description: parent.Description,
+            Category: dcat[parent.CategoryId],
+          };
+        });
       }
     } catch (e) {
       console.log(e);
@@ -152,34 +204,8 @@ export default Vue.extend({
   },
   computed: {
     course(): ICourse {
-      if (this.items && this.items.length > 0) {
-        const course = this.items[0].Child;
-        const requirements: ICourse[] = [];
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const item of this.items) {
-          if (!item.Parent) {
-            // eslint-disable-next-line no-continue
-            continue;
-          }
-
-          requirements.push({
-            Id: item.Parent.Id,
-            Title: item.Parent.Title,
-            Description: item.Parent.Description,
-            Category: item.Parent.Category,
-          });
-        }
-
-        return {
-          Id: course.Id,
-          Title: course.Title,
-          Description: course.Description,
-          Category: course.Category,
-          Requirements: requirements,
-          Created: new Date(course.Created),
-          Modified: new Date(course.Modified),
-        };
+      if (this.item) {
+        return this.item;
       }
       return staticCourse;
     },

@@ -1,4 +1,4 @@
-interface ICategory {
+interface ICourseCategory {
   Id: number,
   Title: string,
 }
@@ -7,7 +7,7 @@ interface ICourse {
   Id?: number,
   Title: string | null,
   Description: string | null,
-  Category?: ICategory | null,
+  Category?: ICourseCategory | null,
   Requirements?: ICourse[],
   Created?: Date,
   Modified?: Date,
@@ -15,6 +15,6 @@ interface ICourse {
 }
 
 export {
-  ICategory,
+  ICourseCategory,
   ICourse,
 };
