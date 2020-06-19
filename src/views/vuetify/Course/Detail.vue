@@ -139,14 +139,9 @@ export default Vue.extend({
         const id = Number(this.$route.params.id);
         this.items = await this.$sp.web
           .lists.getByTitle('CoursesDependencies')
-          .items.filter(`Child eq ${id}`)
+          .items.filter(`ChildId eq ${id}`)
           .expand('Child', 'Child/Category', 'Parent', 'Parent/Category')
-          .select(
-            'Child/Id', 'Child/Title', 'Child/Description',
-            'Child/Category/Id', 'Child/Category/Title',
-            'Parent/Id', 'Parent/Title', 'Parent/Description',
-            'Parent/Category/Id', 'Parent/Category/Title',
-          )
+          .select('Parent/Id', 'Child/Id')
           .get();
       }
     } catch (e) {
