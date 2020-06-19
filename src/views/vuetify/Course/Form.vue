@@ -88,7 +88,8 @@ export default Vue.extend({
         const id = Number(this.$route.params.id);
         this.course = await this.$sp.web
           .lists.getByTitle('Courses')
-          .items.getById(id)
+          .items.select('*', 'Category/Id', 'Category/Title')
+          .expand('Category').getById(id)
           .get<ICourse>();
       }
     } catch (e) {

@@ -135,6 +135,8 @@ export default Vue.extend({
         this.course = await this.$sp.web
           .lists.getByTitle('Courses')
           .items.getById(id)
+          .expand('Category')
+          .select('*', 'Category/Id', 'Category/Title')
           .get<ICourse>();
       }
     } catch (e) {
