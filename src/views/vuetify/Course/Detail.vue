@@ -36,8 +36,8 @@
     </portal>
     <v-container class="px-4">
       <v-row>
-        <v-col cols="12" class="d-flex align-center">
-          <h4 class="text-h4">{{ item.Title }}</h4>
+        <v-col cols="12" class="d-flex">
+          <h4 class="text-h4 mx-0">{{ item.Title }}</h4>
           <v-chip
             v-if="item.Category"
             small
@@ -57,7 +57,7 @@
       <h5 class="text-subtitle-2 text-decoration-underline">
         This course requires the following courses to be taken fisrt
       </h5>
-      <v-row>
+      <v-row v-if="item.Requirements && item.Requirements.length > 0">
         <template v-for="requirement in item.Requirements">
           <v-col :key="requirement.Id" cols="auto">
             <v-card outlined>
