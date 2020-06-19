@@ -111,7 +111,7 @@ export default Vue.extend({
   computed: {
     courses(): ICourse[] {
       if (this.items) {
-        this.items.results.map((item) => {
+        return this.items.results.map((item) => {
           const course: ICourse = {
             Id: item.Id,
             Title: item.Title,
