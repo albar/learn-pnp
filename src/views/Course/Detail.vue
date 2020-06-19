@@ -5,7 +5,8 @@
       <v-menu key="menu" offset-y left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-bind="attrs" v-on="on"
+            v-bind="attrs"
+            v-on="on"
             text
             small
             depressed
@@ -44,27 +45,20 @@
             class="ma-2"
             outlined
             label
-          >
-            {{ course.Category.Title }}
-          </v-chip>
+          >{{ course.Category.Title }}</v-chip>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
-          {{ course.Description }}
-        </v-col>
+        <v-col cols="12">{{ course.Description }}</v-col>
       </v-row>
       <template v-if="course.Requirements && course.Requirements.length > 0">
-        <h5 class="text-subtitle-2 text-decoration-underline">
-          This course requires the following courses to be taken fisrt
-        </h5>
+        <h5
+          class="text-subtitle-2 text-decoration-underline"
+        >This course requires the following courses to be taken fisrt</h5>
         <v-row>
           <template v-for="requirement in course.Requirements">
             <v-col :key="requirement.Id" cols="auto">
-              <course-card
-                :course="requirement"
-                title-link
-              ></course-card>
+              <course-card :course="requirement" title-link></course-card>
             </v-col>
           </template>
         </v-row>
@@ -121,46 +115,14 @@ export default Vue.extend({
   data: () => ({
     item: null as ICourse | null,
   }),
-  async created() {
-    try {
-      if (this.$route.params.id) {
-        const id = Number(this.$route.params.id);
-
-        const course = await this.$sp.web
-          .lists.getByTitle('Courses')
-          .items.getById(id)
-          .expand('Category')
-          .select('*', 'Category/Id', 'Category/Title')
-          .get();
-
-        this.item = {
-          Id: course.Id,
-          Title: course.Title,
-          Description: course.Description,
-          Category: course.Category,
-          Created: new Date(course.Created),
-          Modified: new Date(course.Modified),
-        };
-
-        const requirementsIds: number[] = (await this.$sp.web
-          .lists.getByTitle('CoursesDependencies')
-          .items.filter(`ChildId eq ${id}`)
-          .expand('Parent')
-          .select('Parent/Id')
-          .getAll()).map((req) => req.Parent.Id);
-
-        if (requirementsIds.length > 0) {
-          this.item.Requirements = await this.$sp.web
-            .lists.getByTitle('Courses')
-            .items.filter(requirementsIds.map((rId) => `Id eq ${rId}`).join(' or '))
-            .expand('Category')
-            .select('*', 'Category/Id', 'Category/Title')
-            .get<ICourse[]>();
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
+  created() {
+    this.initialize();
+  },
+  watch: {
+    // eslint-disable-next-line object-shorthand
+    '$route.params.id'() {
+      this.initialize();
+    },
   },
   computed: {
     course(): ICourse {
@@ -168,6 +130,53 @@ export default Vue.extend({
         return this.item;
       }
       return staticCourse;
+    },
+  },
+  methods: {
+    async initialize() {
+      try {
+        if (this.$route.params.id) {
+          const id = Number(this.$route.params.id);
+
+          const course = await this.$sp.web.lists
+            .getByTitle('Courses')
+            .items.getById(id)
+            .expand('Category')
+            .select('*', 'Category/Id', 'Category/Title')
+            .get();
+
+          this.item = {
+            Id: course.Id,
+            Title: course.Title,
+            Description: course.Description,
+            Category: course.Category,
+            Created: new Date(course.Created),
+            Modified: new Date(course.Modified),
+          };
+
+          const requirementsIds: number[] = (
+            await this.$sp.web.lists
+              .getByTitle('CoursesDependencies')
+              .items.filter(`ChildId eq ${id}`)
+              .expand('Parent')
+              .select('Parent/Id')
+              .getAll()
+          ).map((req) => req.Parent.Id);
+
+          if (requirementsIds.length > 0) {
+            this.item.Requirements = await this.$sp.web.lists
+              .getByTitle('Courses')
+              .items.filter(
+                requirementsIds.map((rId) => `Id eq ${rId}`).join(' or '),
+              )
+              .expand('Category')
+              .select('*', 'Category/Id', 'Category/Title')
+              .get<ICourse[]>();
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 });
