@@ -37,7 +37,7 @@
     <v-container class="px-4">
       <v-row>
         <v-col cols="12" class="d-flex align-center">
-          <h3>{{ this.item.Title }}</h3>
+          <h4 class="text-h4">{{ item.Title }}</h4>
           <v-chip
             v-if="item.Category"
             small
