@@ -54,31 +54,33 @@
           {{ item.Description }}
         </v-col>
       </v-row>
-      <h5 class="text-subtitle-2 text-decoration-underline">
-        This course requires the following courses to be taken fisrt
-      </h5>
-      <v-row v-if="item.Requirements && item.Requirements.length > 0">
-        <template v-for="requirement in item.Requirements">
-          <v-col :key="requirement.Id" cols="auto">
-            <v-card outlined>
-              <v-card-title>
-                {{ requirement.Title }}
-                <v-chip
-                  v-if="requirement.Category"
-                  small
-                  class="ma-2"
-                  outlined
-                  flat
-                  label
-                >
-                  {{ requirement.Category.Title }}
-                </v-chip>
-              </v-card-title>
-              <v-card-text v-text="requirement.Description"></v-card-text>
-            </v-card>
-          </v-col>
-        </template>
-      </v-row>
+      <template v-if="item.Requirements && item.Requirements.length > 0">
+        <h5 class="text-subtitle-2 text-decoration-underline">
+          This course requires the following courses to be taken fisrt
+        </h5>
+        <v-row>
+          <template v-for="requirement in item.Requirements">
+            <v-col :key="requirement.Id" cols="auto">
+              <v-card outlined>
+                <v-card-title>
+                  {{ requirement.Title }}
+                  <v-chip
+                    v-if="requirement.Category"
+                    small
+                    class="ma-2"
+                    outlined
+                    flat
+                    label
+                  >
+                    {{ requirement.Category.Title }}
+                  </v-chip>
+                </v-card-title>
+                <v-card-text v-text="requirement.Description"></v-card-text>
+              </v-card>
+            </v-col>
+          </template>
+        </v-row>
+      </template>
     </v-container>
   </div>
 </template>
@@ -135,8 +137,13 @@ export default Vue.extend({
         this.course = await this.$sp.web
           .lists.getByTitle('Courses')
           .items.getById(id)
-          .expand('Category')
-          .select('*', 'Category/Id', 'Category/Title')
+          .expand('Category', 'Requirements', 'Requirements/Category')
+          .select(
+            '*',
+            'Category/Id', 'Category/Title',
+            'Requirements/Id', 'Requirements/Title', 'Requirements/Description',
+            'Requirements/Category/Id', 'Requirements/Category/Title',
+          )
           .get<ICourse>();
       }
     } catch (e) {
