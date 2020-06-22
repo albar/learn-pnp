@@ -17,7 +17,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/course/create',
-    component: () => import('@/views/Course/Form.vue'),
+    component: () => import('@/views/Course/Create.vue'),
     meta: {
       breadcrumbs: ['Course', 'Create'],
     },
@@ -31,7 +31,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/course/:id/edit',
-    component: () => import('@/views/Course/Form.vue'),
+    component: () => import('@/views/Course/Edit.vue'),
     meta: {
       breadcrumbs: ['Course', 'Edit'],
     },

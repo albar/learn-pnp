@@ -2,12 +2,12 @@
   <v-list-item>
     <template>
       <v-list-item-content>
-        <v-list-item-title class="d-flex align-center">
+        <v-list-item-title class="d-flex">
           <b>{{ course.Title }}</b>
           <v-chip
             v-if="course.Category"
             x-small
-            class="ma-2"
+            class="mx-2 px-1"
             outlined
             label
           >
@@ -33,13 +33,11 @@
             @click="view"
             text small
             color="primary"
-            :to="viewLink"
           >View</v-btn>
           <v-btn v-if="editable"
             @click="edit"
             text small
             color="secondary"
-            :to="editLink"
           >Edit</v-btn>
         </div>
       </v-list-item-action>
@@ -75,10 +73,18 @@ export default Vue.extend({
   },
   methods: {
     view() {
-      this.$emit('view');
+      if (this.viewLink) {
+        this.$router.push(this.viewLink);
+      } else {
+        this.$emit('view');
+      }
     },
     edit() {
-      this.$emit('edit');
+      if (this.editable) {
+        this.$router.push(this.editLink);
+      } else {
+        this.$emit('edit');
+      }
     },
   },
 });

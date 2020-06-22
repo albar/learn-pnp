@@ -8,47 +8,45 @@
         link to="/course/create"
       >Create a Course</v-btn>
     </portal>
-    <v-toolbar flat>
-      <v-container fluid class="d-flex align-stretch justify-space-between">
-        <v-row>
-          <v-col cols="8">
-            <v-text-field
-              label="search"
-              placeholder="type the course name"
-              height="36"
-              flat
-              dense
-              clearable
-              hide-details
-              outlined
-            ></v-text-field>
-            <v-btn text x-small color="primary" style="padding: 0; margin: 0;">Filter</v-btn>
-          </v-col>
-          <v-col class="d-flex">
-            <v-spacer></v-spacer>
-            <div class="d-flex align-end">
-              <v-btn
-                color="primary"
-                outlined small
-                disabled
-                style="padding: 0; min-width: unset;"
-              >
-                <v-icon>mdi-menu-left</v-icon>
-              </v-btn>
-              <v-btn
-                @click="next"
-                color="primary"
-                outlined small
-                :disabled="!items || !items.hasNext"
-                style="padding: 0; min-width: unset;"
-              >
-                <v-icon>mdi-menu-right</v-icon>
-              </v-btn>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-toolbar>
+    <v-container class="d-flex align-stretch justify-space-between px-4">
+      <v-row>
+        <v-col cols="8">
+          <v-text-field
+            label="search"
+            placeholder="type the course name"
+            height="36"
+            flat
+            dense
+            clearable
+            hide-details
+            outlined
+          ></v-text-field>
+          <v-btn text x-small color="primary" style="padding: 0; margin: 0;">Filter</v-btn>
+        </v-col>
+        <v-col class="d-flex">
+          <v-spacer></v-spacer>
+          <div class="d-flex align-end">
+            <v-btn
+              color="primary"
+              outlined small
+              disabled
+              style="padding: 0; min-width: unset;"
+            >
+              <v-icon>mdi-menu-left</v-icon>
+            </v-btn>
+            <v-btn
+              @click="next"
+              color="primary"
+              outlined small
+              :disabled="!items || !items.hasNext"
+              style="padding: 0; min-width: unset;"
+            >
+              <v-icon>mdi-menu-right</v-icon>
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
 
     <v-list two-line>
       <v-divider></v-divider>
@@ -69,7 +67,7 @@
 import Vue from 'vue';
 import '@pnp/sp/presets/core';
 import { PagedItemCollection } from '@pnp/sp/items';
-import { ICourse } from '@/models/course';
+import { ICourse, Mapper } from '@/models/course';
 import CourseListItem from '@/components/CourseListItem.vue';
 
 const date = new Date();
@@ -85,6 +83,7 @@ const courses: ICourse[] = [
       Id: 0,
       Title: 'Category A',
     },
+    Requirements: [],
     Created: date,
     Modified: date,
   },
@@ -96,12 +95,14 @@ const courses: ICourse[] = [
       Id: 1,
       Title: 'Category B',
     },
+    Requirements: [],
     Created: date,
     Modified: ndate,
   },
 ];
 
 export default Vue.extend({
+  name: 'CourseList',
   components: { CourseListItem },
   data: () => ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -111,25 +112,7 @@ export default Vue.extend({
   computed: {
     courses(): ICourse[] {
       if (this.items) {
-        return this.items.results.map((item) => {
-          const course: ICourse = {
-            Id: item.Id,
-            Title: item.Title,
-            Description: item.Description,
-          };
-
-          if (item.Category) {
-            course.Category = item.Category;
-          }
-          if (item.Created) {
-            course.Created = new Date(item.Created);
-          }
-          if (item.Modified) {
-            course.Modified = new Date(item.Modified);
-          }
-
-          return course;
-        });
+        return Mapper.mapAll(this.items.results);
       }
       return courses;
     },
@@ -140,7 +123,7 @@ export default Vue.extend({
         .getByTitle('Courses')
         .items.expand('Category')
         .select('*', 'Category/Id', 'Category/Title')
-        .top(10)
+        .top(5)
         .getPaged<ICourse[]>();
     } catch (e) {
       console.log(e);
