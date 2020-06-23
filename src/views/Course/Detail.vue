@@ -79,73 +79,27 @@ import '@pnp/sp/items';
 import { ICourse, getCourseById } from '@/models/course';
 import CourseCard from '@/components/CourseCard.vue';
 
-const staticCourse: ICourse = {
-  Id: 1,
-  Title: 'New Course',
-  Description: 'New Course Description',
-  Category: {
-    Id: 1,
-    Title: 'Category B',
-  },
-  Created: new Date(),
-  Modified: new Date(),
-  Requirements: [
-    {
-      Id: 1,
-      Title: 'Another Course',
-      Description: 'New Course Description',
-      Category: {
-        Id: 1,
-        Title: 'Category B',
-      },
-      Requirements: [],
-      Created: new Date(),
-      Modified: new Date(),
-    },
-    {
-      Id: 2,
-      Title: 'Yet Another Course',
-      Description: 'New Course Description',
-      Category: {
-        Id: 1,
-        Title: 'Category B',
-      },
-      Requirements: [],
-      Created: new Date(),
-      Modified: new Date(),
-    },
-  ],
-};
-
 export default Vue.extend({
   name: 'CourseDetail',
   components: { CourseCard },
   data: () => ({
-    item: null as ICourse | null,
+    course: null as ICourse | null,
   }),
   async created() {
     try {
       if (this.$route.params.id) {
         const id = Number(this.$route.params.id);
-        this.item = await getCourseById(this.$sp, id);
+        this.course = await getCourseById(this.$sp, id);
       }
     } catch (e) {
       console.log(e);
     }
   },
-  computed: {
-    course(): ICourse {
-      if (this.item) {
-        return this.item;
-      }
-      return staticCourse;
-    },
-  },
   methods: {
     async remove() {
-      if (this.item) {
+      if (this.course) {
         await this.$sp.web.lists.getByTitle('Courses')
-          .items.getById(this.item.Id)
+          .items.getById(this.course.Id)
           .delete();
 
         this.$router.push('/course');

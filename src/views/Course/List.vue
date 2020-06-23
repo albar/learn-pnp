@@ -70,37 +70,6 @@ import { PagedItemCollection } from '@pnp/sp/items';
 import { ICourse, Mapper } from '@/models/course';
 import CourseListItem from '@/components/CourseListItem.vue';
 
-const date = new Date();
-const ndate = new Date();
-ndate.setSeconds(59);
-
-const courses: ICourse[] = [
-  {
-    Id: 1,
-    Title: 'A Course',
-    Description: 'A Course Description',
-    Category: {
-      Id: 0,
-      Title: 'Category A',
-    },
-    Requirements: [],
-    Created: date,
-    Modified: date,
-  },
-  {
-    Id: 2,
-    Title: 'New Course',
-    Description: 'New Course Description',
-    Category: {
-      Id: 1,
-      Title: 'Category B',
-    },
-    Requirements: [],
-    Created: date,
-    Modified: ndate,
-  },
-];
-
 export default Vue.extend({
   name: 'CourseList',
   components: { CourseListItem },
@@ -111,10 +80,7 @@ export default Vue.extend({
   }),
   computed: {
     courses(): ICourse[] {
-      if (this.items) {
-        return Mapper.mapAll(this.items.results);
-      }
-      return courses;
+      return Mapper.mapAll(this.items?.results || []);
     },
   },
   async created() {
