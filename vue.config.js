@@ -4,7 +4,7 @@ module.exports = {
     port: process.env.VUE_APP_CLIENT_PORT,
     https: false,
   },
-  publicPath: process.env.VUE_APP_BASE_URL,
+  publicPath: process.env.NODE_ENV === 'development' ? '/' : process.env.VUE_APP_BASE_URL,
   transpileDependencies: [
     'vuetify',
   ],

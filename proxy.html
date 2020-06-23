@@ -1,0 +1,32 @@
+<iframe id="app-frame" src="http://localhost:8080" style="height: 100vh; width:100%;"></iframe>
+<script>
+var app = document.getElementById('app-frame');
+window.addEventListener("message", function (event) {
+  if (!event.data) return;
+  var data = {};
+  try {
+    data = JSON.parse(event.data);
+  } catch(e) {}
+  if (!data.id) return;
+  fetch(data.request.url, data.request.options).then(function (response) {
+    var headers = {};
+    for(var [key, value] of response.headers.entries()) {
+      headers[key] = value;
+    }
+    var message = {
+      id: data.id,
+      init: {
+        status: response.status,
+        statusText: response.statusText,
+        headers
+      }
+    };
+    response.text().then(function (text) {
+      message.body = text;
+      app.contentWindow.postMessage(JSON.stringify(message), '*');
+    }).catch(function () {
+      app.contentWindow.postMessage(JSON.stringify(message), '*');
+    });
+  });
+}, false);
+</script>
