@@ -164,11 +164,9 @@ export async function updateCourse(sp: SPRest, course: ICourse): Promise<void> {
 
   const batch = sp.web.createBatch();
 
-  if (detachables.length > 0) {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const id of detachables) {
-      list.items.inBatch(batch).getById(id).delete();
-    }
+  // eslint-disable-next-line no-restricted-syntax
+  for (const id of detachables) {
+    list.items.inBatch(batch).getById(id).delete();
   }
 
   if (attachables.length > 0) {
