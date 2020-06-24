@@ -35,39 +35,41 @@
         </v-list>
       </v-menu>
     </portal>
-    <v-row>
-      <v-col cols="12" class="d-flex">
-        <h4 class="text-h4 mx-0">{{ course.Title }}</h4>
-        <v-chip
-          v-if="course.Category"
-          small
-          class="ma-2"
-          outlined
-          label
-        >
-          {{ course.Category.Title }}
-        </v-chip>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        {{ course.Description }}
-      </v-col>
-    </v-row>
-    <template v-if="course.Requirements && course.Requirements.length > 0">
-      <h5 class="text-subtitle-2 text-decoration-underline">
-        This course requires the following courses to be taken fisrt
-      </h5>
+    <template v-if="course">
       <v-row>
-        <template v-for="requirement in course.Requirements">
-          <v-col :key="requirement.Id" cols="auto">
-            <course-card
-              :course="requirement"
-              title-link
-            ></course-card>
-          </v-col>
-        </template>
+        <v-col cols="12" class="d-flex">
+          <h4 class="text-h4 mx-0">{{ course.Title }}</h4>
+          <v-chip
+            v-if="course.Category"
+            small
+            class="ma-2"
+            outlined
+            label
+          >
+            {{ course.Category.Title }}
+          </v-chip>
+        </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12">
+          {{ course.Description }}
+        </v-col>
+      </v-row>
+      <template v-if="course.Requirements && course.Requirements.length > 0">
+        <h5 class="text-subtitle-2 text-decoration-underline">
+          This course requires the following courses to be taken fisrt
+        </h5>
+        <v-row>
+          <template v-for="requirement in course.Requirements">
+            <v-col :key="requirement.Id" cols="auto">
+              <course-card
+                :course="requirement"
+                title-link
+              ></course-card>
+            </v-col>
+          </template>
+        </v-row>
+      </template>
     </template>
   </v-container>
 </template>
@@ -85,17 +87,25 @@ export default Vue.extend({
   data: () => ({
     course: null as ICourse | null,
   }),
-  async created() {
-    try {
-      if (this.$route.params.id) {
-        const id = Number(this.$route.params.id);
-        this.course = await getCourseById(this.$sp, id);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+  watch: {
+    '$route.params.id': function OnParamsIdChanged() {
+      this.loadCourse();
+    },
+  },
+  created() {
+    this.loadCourse();
   },
   methods: {
+    async loadCourse() {
+      try {
+        if (this.$route.params.id) {
+          const id = Number(this.$route.params.id);
+          this.course = await getCourseById(this.$sp, id);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
     async remove() {
       if (this.course) {
         await this.$sp.web.lists.getByTitle('Courses')
