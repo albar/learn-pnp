@@ -15,7 +15,8 @@ Vue.config.devtools = true;
 
 function fetchClientFactory() {
   return process.env.NODE_ENV === 'development'
-    ? new DevelopmentProxyClient() : new NodeFetchClient();
+    ? new DevelopmentProxyClient(process.env.VUE_APP_PROXY_PAGE)
+    : new NodeFetchClient();
 }
 
 Vue.use(PortalVue);

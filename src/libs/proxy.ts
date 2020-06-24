@@ -1,21 +1,30 @@
-/* eslint-disable no-restricted-globals */
-import { IHttpClientImpl, IFetchOptions, dateAdd } from '@pnp/common';
-
-function generateUniqeId(): string {
-  return Math.random().toString(36).substring(2);
-}
+import { IHttpClientImpl, IFetchOptions } from '@pnp/common';
 
 declare type ProxyCallback = (response: Response) => void;
 
 export class DevelopmentProxyClient implements IHttpClientImpl {
-  private initialized = false;
+  private proxyUrl: string;
+
+  private frame: HTMLIFrameElement | null = null;
 
   private listeners: { [key: string]: ProxyCallback } = {};
 
-  fetch(url: string, options: IFetchOptions): Promise<Response> {
+  private mounting: Promise<void>;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private resolveMounting: () => void = () => { };
+
+  constructor(proxyUrl: string) {
+    this.proxyUrl = proxyUrl;
+    this.mounting = new Promise((resolve) => {
+      this.resolveMounting = resolve;
+    });
+  }
+
+  async fetch(url: string, options: IFetchOptions): Promise<Response> {
+    await this.mounting;
     return new Promise<Response>((resolve) => {
-      if (!this.initialized) this.initializeEventListener();
-      const id = generateUniqeId();
+      const id = this.generateUniqeId();
       this.listeners[id] = (response) => {
         resolve(response);
       };
@@ -26,7 +35,8 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
           headers[key] = value;
         }
       }
-      parent.postMessage(JSON.stringify({
+      // eslint-disable-next-line no-unused-expressions
+      this.frame?.contentWindow?.postMessage(JSON.stringify({
         id,
         request: {
           url,
@@ -39,8 +49,21 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
     });
   }
 
-  initializeEventListener() {
-    if (!window || this.initialized) return;
+  generateUniqeId(): string {
+    const id = Math.random().toString(36).substring(2);
+    if (!this.listeners[id]) return id;
+    return this.generateUniqeId();
+  }
+
+  init() {
+    const onMounted = (event: MessageEvent) => {
+      if (event.data === 'Sp-Proxy-Ready') {
+        this.resolveMounting();
+        window.removeEventListener('message', onMounted);
+      }
+    };
+
+    window.addEventListener('message', onMounted);
 
     window.addEventListener('message', (event: MessageEvent) => {
       try {
@@ -57,14 +80,17 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
           init.status = '200';
         }
 
-        const response = new Response(body, init);
-        listener(response);
+        listener(new Response(body, init));
       } catch (e) {
         // console.log(e);
       }
     }, false);
-    this.initialized = true;
+
+    this.frame = document.createElement('iframe');
+    this.frame.src = this.proxyUrl;
+    this.frame.style.display = 'none !important';
+    document.body.appendChild(this.frame);
   }
 }
 
-export default new DevelopmentProxyClient();
+export default DevelopmentProxyClient;
