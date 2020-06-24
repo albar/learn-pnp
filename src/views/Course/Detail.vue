@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-4">
+  <v-container class="px-4" :key="$route.params.id">
     <portal to="page-action">
       <v-btn key="back" text small color="secondary" exact to="/course" class="mr-2">Back</v-btn>
       <v-menu key="menu" offset-y left>
