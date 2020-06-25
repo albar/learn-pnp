@@ -76,8 +76,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { ICourse, Mapper as CourseMapper } from '@/models/course';
-import { ICourseCategory, Mapper as CategoryMapper } from '@/models/category';
+import { ICourse } from '@/models/course';
+import { ICourseCategory } from '@/models/category';
+import { mapper as courseMapper } from '@/mappers/course';
+import { mapper as categoryMapper } from '@/mappers/category';
 
 export default Vue.extend({
   props: {
@@ -186,8 +188,8 @@ export default Vue.extend({
         this.course.Category = this.category;
       }
 
-      this.categories = CategoryMapper.mapAll(await categoriesRequest);
-      this.courses = CourseMapper.mapAll(await coursesRequest);
+      this.categories = categoryMapper.mapAll(await categoriesRequest);
+      this.courses = courseMapper.mapAll(await coursesRequest);
     },
     uncategorize() {
       this.course.Category = null;

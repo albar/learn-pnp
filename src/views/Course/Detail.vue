@@ -78,7 +78,8 @@
 import Vue from 'vue';
 import '@pnp/sp/presets/core';
 import '@pnp/sp/items';
-import { ICourse, getCourseById } from '@/models/course';
+import { ICourse } from '@/models/course';
+import { getCourseById } from '@/managers/course';
 import CourseCard from '@/components/CourseCard.vue';
 
 export default Vue.extend({

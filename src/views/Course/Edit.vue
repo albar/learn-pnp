@@ -23,7 +23,8 @@ import Vue from 'vue';
 import '@pnp/sp/presets/core';
 import '@pnp/sp/items';
 import CourseForm from '@/components/CourseForm.vue';
-import { ICourse, getCourseById, updateCourse } from '@/models/course';
+import { ICourse } from '@/models/course';
+import { getCourseById, updateCourse } from '@/managers/course';
 
 export default Vue.extend({
   name: 'CourseEdit',

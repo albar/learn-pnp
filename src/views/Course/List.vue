@@ -67,7 +67,8 @@
 import Vue from 'vue';
 import '@pnp/sp/presets/core';
 import { PagedItemCollection } from '@pnp/sp/items';
-import { ICourse, Mapper } from '@/models/course';
+import { ICourse } from '@/models/course';
+import { mapper } from '@/mappers/course';
 import CourseListItem from '@/components/CourseListItem.vue';
 
 export default Vue.extend({
@@ -80,7 +81,7 @@ export default Vue.extend({
   }),
   computed: {
     courses(): ICourse[] {
-      return Mapper.mapAll(this.items?.results || []);
+      return mapper.mapAll(this.items?.results || []);
     },
   },
   async created() {
