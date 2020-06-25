@@ -13,7 +13,7 @@ export async function getCourseRequirementsIdsById(sp: SPRest, id: number): Prom
   return requirements.map((requirement) => requirement.ParentId);
 }
 
-export async function getCoursesByIds(sp: SPRest, ...ids: number[]) {
+export async function getCoursesByIds(sp: SPRest, ...ids: number[]): Promise<ICourse[]> {
   const requirements = await sp.web
     .lists.getByTitle('Courses')
     .items.filter(ids.map((id) => `(Id eq ${id})`).join(' or '))
