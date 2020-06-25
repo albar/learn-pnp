@@ -79,7 +79,7 @@ import Vue from 'vue';
 import '@pnp/sp/presets/core';
 import '@pnp/sp/items';
 import { ICourse } from '@/models/course';
-import { getCourseById } from '@/managers/course';
+import { getCourseWithRequirementsById } from '@/managers/course';
 import CourseCard from '@/components/CourseCard.vue';
 
 export default Vue.extend({
@@ -101,7 +101,7 @@ export default Vue.extend({
       try {
         if (this.$route.params.id) {
           const id = Number(this.$route.params.id);
-          this.course = await getCourseById(this.$sp, id);
+          this.course = await getCourseWithRequirementsById(this.$sp, id);
         }
       } catch (e) {
         console.log(e);

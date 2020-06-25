@@ -24,7 +24,7 @@ import '@pnp/sp/presets/core';
 import '@pnp/sp/items';
 import CourseForm from '@/components/CourseForm.vue';
 import { ICourse } from '@/models/course';
-import { getCourseById, updateCourse } from '@/managers/course';
+import { getCourseWithRequirementsById, updateCourse } from '@/managers/course';
 
 export default Vue.extend({
   name: 'CourseEdit',
@@ -41,7 +41,7 @@ export default Vue.extend({
   async created() {
     try {
       this.course.Id = Number(this.$route.params.id);
-      const course = await getCourseById(this.$sp, this.course.Id);
+      const course = await getCourseWithRequirementsById(this.$sp, this.course.Id);
       if (course !== null) {
         this.course.Id = course.Id;
         this.course.Title = course.Title;

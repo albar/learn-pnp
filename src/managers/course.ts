@@ -36,6 +36,14 @@ export async function getCourseRequirementsById(sp: SPRest, id: number): Promise
 }
 
 export async function getCourseById(sp: SPRest, id: number): Promise<ICourse | null> {
+  const courses = await getCoursesByIds(sp, id);
+  return courses[0] || null;
+}
+
+export async function getCourseWithRequirementsById(
+  sp: SPRest,
+  id: number,
+): Promise<ICourse | null> {
   const requirementsIds = await getCourseRequirementsIdsById(sp, id);
   const courses = await getCoursesByIds(sp, id, ...requirementsIds);
 
