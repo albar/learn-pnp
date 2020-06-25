@@ -86,7 +86,7 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
 
     this.frame = document.createElement('iframe');
     this.frame.src = this.proxyUrl;
-    this.frame.style.display = 'none !important';
+    this.frame.style.display = 'none';
     document.body.appendChild(this.frame);
   }
 }
