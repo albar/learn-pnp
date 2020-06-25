@@ -1,0 +1,12 @@
+{
+    "javascript.format.semicolons": "insert",
+    "typescript.format.semicolons": "insert",
+    "eslint.format.enable": true,
+    "eslint.validate": [
+        "typescript"
+    ],
+    "typescript.format.enable": false,
+    "javascript.format.enable": false,
+    "vetur.format.defaultFormatter.js": "prettier-eslint",
+    "vetur.format.defaultFormatter.ts": "prettier-tslint"
+}
