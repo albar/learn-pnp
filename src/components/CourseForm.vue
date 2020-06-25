@@ -22,6 +22,9 @@
             item-text="Title"
             :item-value="item => item"
             :value-comparator="(a,b) => a && b && a.Id === b.Id"
+            :menu-props="{
+              closeOnContentClick: true,
+            }"
             flat
             dense
             outlined
