@@ -29,8 +29,8 @@ export default {
           Vue.mixin({
             mounted() {
               if (mounted) return;
-              client.init();
               mounted = true;
+              client.init();
             },
           });
         }
