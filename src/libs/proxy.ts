@@ -25,9 +25,7 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
     await this.mounting;
     return new Promise<Response>((resolve) => {
       const id = this.generateUniqeId();
-      this.listeners[id] = (response) => {
-        resolve(response);
-      };
+      this.listeners[id] = resolve;
       const headers: { [key: string]: string | string[] } = {};
       if (options.headers && typeof options.headers.entries === 'function') {
         // eslint-disable-next-line no-restricted-syntax
