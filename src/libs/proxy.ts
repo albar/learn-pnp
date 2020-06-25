@@ -53,7 +53,7 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
     return this.generateUniqeId();
   }
 
-  init() {
+  init(): void {
     const onMounted = (event: MessageEvent) => {
       if (event.data === 'Sp-Proxy-Ready') {
         this.resolveMounting();
