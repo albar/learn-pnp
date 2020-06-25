@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SPRest } from '@pnp/sp';
 import '@pnp/sp/presets/core';
 import '@pnp/sp/items';

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ICourseCategory } from './category';
 
 export interface ICourse {
