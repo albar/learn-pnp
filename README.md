@@ -32,6 +32,31 @@
     - In the Action Properties leave the `Value` empty and make sure the `Replace existing server variable value` to be checked.
 - Click `Apply` in the side bar
 
+### List Schema
+
+#### CourseCategories
+
+| Field Name | Field Type | Remarks |
+| --- | --- | --- |
+| Title | Single line of text | |
+
+#### Courses
+
+| Field Name | Field Type | Remarks |
+| --- | --- | --- |
+| Title | Single line of text | |
+| Description | Single line of text | |
+| Category | Lookup (CourseCategories) | |
+
+#### CoursesDependencies
+
+| Field Name | Field Type | Remarks |
+| --- | --- | --- |
+| Parent | Lookup (Courses) | |
+| Child | Lookup (Courses) | |
+
+--------------------------------------------------------------
+
 ## Project setup
 ```
 yarn install
