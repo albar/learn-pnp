@@ -8,5 +8,6 @@
     "typescript.format.enable": false,
     "javascript.format.enable": false,
     "vetur.format.defaultFormatter.js": "prettier-eslint",
-    "vetur.format.defaultFormatter.ts": "prettier-tslint"
+    "vetur.format.defaultFormatter.ts": "prettier-tslint",
+    "files.eol": "\n"
 }
