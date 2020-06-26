@@ -2,10 +2,16 @@ import { IHttpClientImpl, IFetchOptions } from '@pnp/common';
 
 declare type ProxyCallback = (response: Response) => void;
 
+interface IProxyResponse {
+  id?: string;
+  type?: string;
+  response?: { body?: string; init?: ResponseInit; };
+}
+
 export class DevelopmentProxyClient implements IHttpClientImpl {
   private proxyUrl: string;
 
-  private frame: HTMLIFrameElement | null = null;
+  private proxyWindow: Window | null = null;
 
   private listeners: { [key: string]: ProxyCallback } = {};
 
@@ -26,6 +32,7 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
     return new Promise<Response>((resolve) => {
       const id = this.generateUniqeId();
       this.listeners[id] = resolve;
+
       const headers: { [key: string]: string | string[] } = {};
       if (options.headers && typeof options.headers.entries === 'function') {
         // eslint-disable-next-line no-restricted-syntax
@@ -33,9 +40,11 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
           headers[key] = value;
         }
       }
+
       // eslint-disable-next-line no-unused-expressions
-      this.frame?.contentWindow?.postMessage(JSON.stringify({
+      this.proxyWindow?.postMessage(JSON.stringify({
         id,
+        type: 'SP_PROXY_REQUEST',
         request: {
           url,
           options: {
@@ -54,40 +63,52 @@ export class DevelopmentProxyClient implements IHttpClientImpl {
   }
 
   init(): void {
-    const onMounted = (event: MessageEvent) => {
-      if (event.data === 'Sp-Proxy-Ready') {
+    const frame = document.createElement('iframe');
+    frame.src = this.proxyUrl;
+    frame.style.display = 'none';
+
+    const onProxyReady = (event: MessageEvent) => {
+      if (event.data === 'SP_PROXY_READY') {
+        window.removeEventListener('message', onProxyReady);
+        this.proxyWindow = frame.contentWindow;
         this.resolveMounting();
-        window.removeEventListener('message', onMounted);
       }
     };
 
-    window.addEventListener('message', onMounted);
-
+    window.addEventListener('message', onProxyReady);
     window.addEventListener('message', (event: MessageEvent) => {
+      if (!event.data) return;
+
+      let data: IProxyResponse = {};
+
       try {
-        if (!event.data) return;
-        const data = JSON.parse(event.data);
-        const listener = this.listeners[data.id];
-        if (!listener) return;
-        delete this.listeners[data.id];
-
-        // eslint-disable-next-line prefer-const
-        let { body, init } = data;
-
-        if (init.status === 204) {
-          init.status = '200';
-        }
-
-        listener(new Response(body, init));
+        data = JSON.parse(event.data);
       } catch (e) {
-        // console.log(e);
+        // parse error possibly because of the event is
+        // not from our expected response
+        return;
       }
+
+      if (data.type !== 'SP_PROXY_RESPONSE'
+        || !data.id
+        || !data.response
+        || !Object.prototype.hasOwnProperty.call(this.listeners, data.id)
+      ) return;
+
+      const listener = this.listeners[data.id];
+      delete this.listeners[data.id];
+
+      // eslint-disable-next-line prefer-const
+      let { body, init } = data.response;
+
+      if (init?.status === 204) {
+        init.status = 200;
+      }
+
+      listener(new Response(body, init));
     }, false);
 
-    this.frame = document.createElement('iframe');
-    this.frame.src = this.proxyUrl;
-    this.frame.style.display = 'none';
-    document.body.appendChild(this.frame);
+    document.body.appendChild(frame);
   }
 }
 

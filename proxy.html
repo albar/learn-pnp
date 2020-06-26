@@ -11,39 +11,48 @@
   <script>
     (function () {
       if (window.parent) {
-        var app = window.parent;
+        const app = window.parent;
 
-        window.addEventListener("message", function (event) {
+        window.addEventListener("message", async event => {
           if (!event.data) return;
-          var data = {};
+
+          let data = {};
           try {
             data = JSON.parse(event.data);
           } catch (e) { }
 
-          if (!data.id) return;
-          fetch(data.request.url, data.request.options).then(function (response) {
-            var headers = {};
-            for (var [key, value] of response.headers.entries()) {
-              headers[key] = value;
-            }
-            var message = {
-              id: data.id,
+          if (data.type !== 'SP_PROXY_REQUEST'
+            || !data.id
+            || !data.request
+            || !data.request.url
+          ) return;
+
+          const response = await fetch(data.request.url, data.request.options);
+          const headers = {};
+          for (const [key, value] of response.headers.entries()) {
+            headers[key] = value;
+          }
+
+          const message = {
+            id: data.id,
+            type: 'SP_PROXY_RESPONSE',
+            response: {
               init: {
                 status: response.status,
                 statusText: response.statusText,
                 headers
               }
-            };
-            response.text().then(function (text) {
-              message.body = text;
-              app.postMessage(JSON.stringify(message), '*');
-            }).catch(function () {
-              app.postMessage(JSON.stringify(message), '*');
-            });
-          });
+            }
+          };
+
+          try {
+            message.response.body = await response.text();
+          } catch (e) { } finally {
+            app.postMessage(JSON.stringify(message), '*');
+          }
         }, false);
 
-        app.postMessage('Sp-Proxy-Ready', '*');
+        app.postMessage('SP_PROXY_READY', '*');
       }
     })()
   </script>
