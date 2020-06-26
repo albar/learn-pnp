@@ -2,8 +2,8 @@
 
 ## Server setup
 
-- Put file `proxy.html` to the sharepoint document and make sure it is accessible from browser
-- Setup IIS to allow the file to be able to be put on an HTML `iframe` element. This requires iis `url rewrite module` to be installed
+- Put the file `proxy.html` to the sharepoint document and make sure it is accessible from the browser
+- Setup IIS to allow the file to be able to be put into an HTML `iframe` element. This requires iis `url rewrite module` to be installed
 
 ### Configuring IIS URL rewrite module
 
