@@ -1,4 +1,6 @@
-# Sharepoint Webpart Remote Development
+# Sharepoint Webpart Remote Development Example
+
+This is a proof of concept of how to build sharepoint webpart while also accessing sharepoint api remotely.
 
 ## Server setup
 
