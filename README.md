@@ -1,17 +1,17 @@
 # Sharepoint Webpart Remote Development Example
 
-This is a proof of concept of how to build sharepoint webpart while also accessing sharepoint api remotely.
+This is a proof of concept of how to build sharepoint webpart, while also accessing sharepoint api, remotely.
 
 ## Server setup
 
-- Put the file `proxy.html` to the sharepoint document and make sure it is accessible from the browser
+- Put the `proxy.html` file to the sharepoint document and make sure it is accessible from the browser
 - Setup IIS to allow the file to be able to be put into an HTML `iframe` element. This requires iis `url rewrite module` to be installed
 
 ### Configuring IIS URL rewrite module
 
 - From the sharepoint site in the iis manager, open the url rewrite tool
 - Click the `Add Rule(s)` link from the action side bar
-- From the outbound rules section, select the `Blank rule`, then click Ok button
+- From the `outbound rules` section, select the `Blank rule`, then click Ok button
 - In the `Precondition`, select the `Create New Precondition`
 - In the `Using` selection, select the `Regular Expressions` option
 - In the `Logical grouping`, select the `Match all` option. This is optional, since we will only put one condition
@@ -69,7 +69,7 @@ yarn install
 - Copy `.env.example` file in the same directory as `.env` or `.env.local`
 - Fill the variable value as following
     - `VUE_APP_SERVER_HOST` is the server address. For example `http://demoserver/`
-    - `VUE_APP_PROXY_PAGE` is the proxy page (`proxy.html` file) in the server. For example `http://demoserver/Site Assets/proxy.html`
+    - `VUE_APP_PROXY_PAGE` is the proxy page, the `proxy.html` file, in the server. For example `http://demoserver/Site Assets/proxy.html`
     - `VUE_APP_CLIENT_HOST` is your local host for development. For example `localhost` or `127.0.0.1`
     - `VUE_APP_CLIENT_PORT` is yout local port for development. For example `8080`
     - `VUE_APP_BASE_URL` is refering to webpack `baseUrl` or `publicPath` and also used as `vue-router` base. This variable ignored in development mode
