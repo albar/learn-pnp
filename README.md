@@ -74,6 +74,8 @@ yarn install
     - `VUE_APP_CLIENT_PORT` is yout local port for development. For example `8080`
     - `VUE_APP_BASE_URL` is refering to webpack `baseUrl` or `publicPath` and also used as `vue-router` base. This variable ignored in development mode
 
+Note: If there is space in the variable value, put double quotes around it.
+
 ### Compiles and hot-reloads for development
 ```
 yarn serve
